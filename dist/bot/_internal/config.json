@@ -1,0 +1,46 @@
+{
+    "easy": {
+      "LEFT": 1117,
+      "TOP": 451,
+      "WIDTH": 449,
+      "HEIGHT": 361,
+      "COLS": 10,
+      "ROWS": 8,
+      "OX": 2,
+      "OY": 0,
+      "RESTARTX": 3,
+      "RESTARTY": 6,
+      "CHECKWINX": 2,
+      "CHECKWINY": 4
+    },
+  
+    "medium": {
+      "LEFT": 1072,
+      "TOP": 419,
+      "WIDTH": 539,
+      "HEIGHT": 420,
+      "COLS": 18,
+      "ROWS": 14,
+      "OX": 2,
+      "OY": -2,
+      "RESTARTX": 10,
+      "RESTARTY": 10,
+      "CHECKWINX": 5,
+      "CHECKWINY": 7.5
+    },
+  
+    "hard": {
+      "LEFT": 1042,
+      "TOP": 379,
+      "WIDTH": 599,
+      "HEIGHT": 501,
+      "COLS": 24,
+      "ROWS": 20,
+      "OX": 1,
+      "OY": 0,
+      "RESTARTX": 3,
+      "RESTARTY": 6,
+      "CHECKWINX": 2,
+      "CHECKWINY": 4
+    }
+  }

@@ -1,4 +1,4 @@
-# pyinstaller --onedir bot/bot.py
+# pyinstaller --onedir bot/bot.py --add-data "bot/config.json:."
 import mss
 import mss.tools
 from PIL import Image
@@ -10,6 +10,7 @@ from priority_queue import PriorityQueue
 from PIL import Image
 import os
 import sys
+import json
 #Minesweeper window pinned right
 #CHANGE THIS FOR DEBUG mode
 DEBUG = False
@@ -17,65 +18,36 @@ LOOPING = False
 ###############################################################
 #Variables & Constants
 ###############################################################
-mode = 0 #0 easy, 1 medium, 2 hard
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-if(mode ==0):#EASY
-    LEFT = 1117
-    TOP = 451
-    WIDTH = 449 #10 cells across
-    HEIGHT = 361 #8 cells tall
+with open(os.path.join(BASE_DIR, "config.json"), "r") as f:
+    CONFIG = json.load(f)
 
-    COLS = 10
-    ROWS = 8
+mode_name = "easy"
 
-    CELLWIDTH = WIDTH / COLS
-    CELLHEIGHT = HEIGHT / ROWS
+if len(sys.argv) > 1:#cannow pass arguement from launcher to change mode
+    mode_name = sys.argv[1]
 
-    #offsets for pixel sampling
-    OX = 2
-    OY = 0
+cfg = CONFIG[mode_name]
 
-    RESTARTX = 3
-    RESTARTY = 6
-    CHECKWINX = 2
-    CHECKWINY = 4
+LEFT = cfg["LEFT"]
+TOP = cfg["TOP"]
+WIDTH = cfg["WIDTH"]
+HEIGHT = cfg["HEIGHT"]
 
-if(mode ==1):#MEDIUM
-    LEFT = 1072
-    TOP = 419
-    WIDTH = 539 
-    HEIGHT = 420
+COLS = cfg["COLS"]
+ROWS = cfg["ROWS"]
 
-    COLS = 18
-    ROWS = 14
+CELLWIDTH = WIDTH / COLS
+CELLHEIGHT = HEIGHT / ROWS
 
-    CELLWIDTH = WIDTH / COLS
-    CELLHEIGHT = HEIGHT / ROWS
+OX = cfg["OX"]
+OY = cfg["OY"]
 
-    #offsets for pixel sampling
-    OX = 2
-    OY = -2
-
-    RESTARTX = 10
-    RESTARTY = 10
-    CHECKWINX = 5
-    CHECKWINY = 7.5
-
-if(mode ==2):#HARD
-    LEFT = 1042
-    TOP = 379
-    WIDTH = 599 #10 cells across
-    HEIGHT = 501 #8 cells tall
-
-    COLS = 24
-    ROWS = 20
-
-    CELLWIDTH = WIDTH / COLS
-    CELLHEIGHT = HEIGHT / ROWS
-
-    #offsets for pixel sampling
-    OX = 1
-    OY = 0
+RESTARTX = cfg["RESTARTX"]
+RESTARTY = cfg["RESTARTY"]
+CHECKWINX = cfg["CHECKWINX"]
+CHECKWINY = cfg["CHECKWINY"]
 
 gameActive = False
 gameWon = False

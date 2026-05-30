@@ -59,8 +59,16 @@ def run_bot():
     else:
         bot_path = "dist/bot/bot"
 
+    mode_map = {
+    "Easy": "easy",
+    "Medium": "medium",
+    "Hard": "hard"
+}
 
-    process = subprocess.Popen([bot_path], cwd=os.path.dirname(bot_path))
+    mode_arg = mode_map[selected_mode]
+
+    process = subprocess.Popen([bot_path, mode_arg])
+    #process = subprocess.Popen([bot_path], cwd=os.path.dirname(bot_path))
 
     # print("Executable:", sys.executable)
     # print("Launcher dir:", launcher_dir)
