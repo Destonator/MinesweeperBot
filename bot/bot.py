@@ -21,7 +21,7 @@ mode = 0 #0 easy, 1 medium, 2 hard
 
 if(mode ==0):#EASY
     LEFT = 1117
-    TOP = 452
+    TOP = 451
     WIDTH = 449 #10 cells across
     HEIGHT = 361 #8 cells tall
 

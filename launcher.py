@@ -71,10 +71,85 @@ def run_bot():
     check_process()
 
 root = tkinter.Tk()
-root.title("Launcher")
+root.title("Minesweeper Bot")
+#root.configure(bg="white")
+root.minsize(300, 150)
+root.lift()
+root.focus_force()
+root.attributes("-topmost", True)
+#root.after(100, lambda: root.attributes("-topmost", False))
 
-button = tkinter.Button(root, text="Run Bot", command=run_bot)
-button.pack(padx=30, pady=30)
+selected_mode = "Easy"
+
+def set_mode(mode):
+    global selected_mode
+    selected_mode = mode
+    print("Selected:", selected_mode)
+
+     # Reset all buttons
+    mode1_btn.config(bg="lightgray", fg="black")
+    mode2_btn.config(bg="lightgray", fg="black")
+    mode3_btn.config(bg="lightgray", fg="black")
+
+    # Highlight selected button
+    if mode == "Easy":
+        mode1_btn.config(bg="#4CAF50", fg="white")
+    elif mode == "Medium":
+        mode2_btn.config(bg="#4CAF50", fg="white")
+    elif mode == "Hard":
+        mode3_btn.config(bg="#4CAF50", fg="white")
+
+button_frame = tkinter.Frame(root)
+button_frame.pack(pady=20)
+
+mode1_btn = tkinter.Label(
+    button_frame,
+    text="Easy",
+    bg="#4CAF50",   # default selected
+    fg="white",
+    padx=15,
+    pady=8,
+    cursor="hand2"
+)
+mode1_btn.pack(side="left", padx=5)
+mode1_btn.bind("<Button-1>", lambda e: set_mode("Easy"))
+
+mode2_btn = tkinter.Label(
+    button_frame,
+    text="Medium",
+    bg="lightgray",
+    fg="black",
+    padx=15,
+    pady=8,
+    cursor="hand2"
+)
+mode2_btn.pack(side="left", padx=5)
+mode2_btn.bind("<Button-1>", lambda e: set_mode("Medium"))
+
+mode3_btn = tkinter.Label(
+    button_frame,
+    text="Hard",
+    bg="lightgray",
+    fg="black",
+    padx=15,
+    pady=8,
+    cursor="hand2"
+)
+mode3_btn.pack(side="left", padx=5)
+mode3_btn.bind("<Button-1>", lambda e: set_mode("Hard"))
+
+button = tkinter.Label(
+    root,
+    text="Run Bot",
+    bg="#4CAF50",
+    fg="white",
+    padx=20,
+    pady=10,
+    cursor="hand2"
+)
+
+button.pack(padx=40, pady=20)
+button.bind("<Button-1>", lambda e: run_bot())
 
 text = tkinter.Label(root, text="")
 
