@@ -1,3 +1,4 @@
+# pyinstaller --onedir bot/bot.py
 import mss
 import mss.tools
 from PIL import Image
@@ -318,6 +319,8 @@ def advanced_search():
 #####
 #Code
 #####
+time.sleep(1)
+print("Initializing")
 
 img = reload_frame()
 gameActive = check_game_state()

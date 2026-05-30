@@ -1,4 +1,4 @@
-('/Users/destoncauthers/Documents/DestonsMinesweeperProgram/MinesweeperBot/build/launcher/PYZ-00.pyz',
+('/Users/destoncauthers/Documents/DestonsMinesweeperProgram2/MinesweeperBot/build/launcher/PYZ-00.pyz',
  [('__future__',
    '/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/__future__.py',
    'PYMODULE'),
