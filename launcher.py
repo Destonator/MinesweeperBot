@@ -1,4 +1,7 @@
 # pyinstaller --onedir --windowed --icon=icon.icns launcher.py
+
+# Code for the UI and launch the bot
+#Created By Deston Cauthers
 import tkinter
 import subprocess
 import os
@@ -81,7 +84,7 @@ def run_bot():
 root = tkinter.Tk()
 root.title("Minesweeper Bot")
 #root.configure(bg="white")
-root.minsize(300, 150)
+root.minsize(400, 200)
 root.lift()
 root.focus_force()
 root.attributes("-topmost", True)
@@ -160,5 +163,18 @@ button.pack(padx=40, pady=20)
 button.bind("<Button-1>", lambda e: run_bot())
 
 text = tkinter.Label(root, text="")
+
+created_label = tkinter.Label(
+    root,
+    text="Created by Deston Cauthers",
+    fg="gray"
+)
+created_label.place(
+    relx=1.0,
+    rely=1.0,
+    anchor="se",
+    x=-10,
+    y=-10
+)
 
 root.mainloop()

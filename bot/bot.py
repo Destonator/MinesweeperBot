@@ -1,4 +1,7 @@
 # pyinstaller --onedir bot/bot.py --add-data "bot/config.json:."
+
+#A bot that plays minesweeper
+#Created by Deston Cauthers
 import mss
 import mss.tools
 from PIL import Image
