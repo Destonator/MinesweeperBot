@@ -12,7 +12,7 @@ process = None
 ##########
 #Functions
 ##########
-def check_process():
+def check_process():#check if bot is still running
     global process
 
     if process is not None:
@@ -20,7 +20,7 @@ def check_process():
 
         if ret is not None:
             # Process finished → restore UI
-            text.config(text="Bot stopped")
+            text.config(text="")
             button.pack(padx=30, pady=30)
             process = None
             return
@@ -88,22 +88,71 @@ def set_mode(mode):
     elif mode == "Hard":
         mode3_btn.config(bg="#4CAF50", fg="white")
 
-    update_config_display()
+    update_parameter_labels()
+    #update_config_display()
 
-def update_config_display():
+# def update_config_display():
+#     mode_key = selected_mode.lower()
+
+#     cfg = CONFIG[mode_key]
+
+#     text = (
+#         f"LEFT: {cfg['LEFT']}   "
+#         f"TOP: {cfg['TOP']}   "
+#         f"WIDTH: {cfg['WIDTH']}   "
+#         f"HEIGHT: {cfg['HEIGHT']}   "
+#     )
+
+#     config_label.config(text=text)
+
+def save_config():
+    with open(config_path, "w") as f:
+        json.dump(CONFIG, f, indent=4)
+
+def change_value(param, delta):
     mode_key = selected_mode.lower()
+    CONFIG[mode_key][param] += delta
+    save_config()
+    update_parameter_labels()
 
-    cfg = CONFIG[mode_key]
+def create_parameter_column(param, column):
 
-    text = (
-        f"LEFT: {cfg['LEFT']}   "
-        f"TOP: {cfg['TOP']}   "
-        f"WIDTH: {cfg['WIDTH']}   "
-        f"HEIGHT: {cfg['HEIGHT']}   "
+    # Parameter name
+    tkinter.Label(
+        parameter_frame,
+        text=param,
+        font=("Arial", 20, "bold")
+    ).grid(row=0, column=column*3+1, padx=0)
+
+    # Minus button
+    tkinter.Button(
+        parameter_frame,
+        text="-",
+        command=lambda: change_value(param, -1)
+    ).grid(row=1, column=column*3)
+
+    # Value label
+    value_label = tkinter.Label(
+        parameter_frame,
+        text="0",
+        width=5
     )
+    value_label.grid(row=1, column=column*3 + 1)
 
-    config_label.config(text=text)
+    # Plus button
+    tkinter.Button(
+        parameter_frame,
+        text="+",
+        command=lambda: change_value(param, 1)
+    ).grid(row=1, column=column*3 + 2)
 
+    parameter_labels[param] = value_label
+
+def update_parameter_labels():
+    cfg = CONFIG[selected_mode.lower()]
+
+    for param, label in parameter_labels.items():
+        label.config(text=str(cfg[param]))
 #########
 #Run Once
 #########
@@ -159,6 +208,10 @@ mode3_btn.pack(side="left", padx=5)
 mode3_btn.bind("<Button-1>", lambda e: set_mode("Hard"))
 
 #Configuration Paremeters
+parameter_frame = tkinter.Frame(root)
+parameter_frame.pack(pady=10)
+parameter_labels = {}
+
 if getattr(sys, 'frozen', False):
     BASE_DIR = os.path.dirname(sys.executable)
 else:
@@ -182,15 +235,20 @@ print(config_path)
 with open(config_path, "r") as f:
     CONFIG = json.load(f)
 
-config_label = tkinter.Label(
-    root,
-    text="",
-    justify="left",
-    font=("Courier", 12)
-)
-config_label.pack(pady=10)
-update_config_display()
+# config_label = tkinter.Label(
+#     root,
+#     text="",
+#     justify="left",
+#     font=("Courier", 12)
+# )
+# config_label.pack(pady=10)
+# update_config_display()
+params = ["LEFT", "TOP", "WIDTH", "HEIGHT"]
 
+for i, param in enumerate(params):
+    create_parameter_column(param, i)
+
+update_parameter_labels()
 #Run Button
 button = tkinter.Label(
     root,
