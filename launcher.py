@@ -6,23 +6,12 @@ import tkinter
 import subprocess
 import os
 import sys
+import json
 
 process = None
-def app_root():
-    if getattr(sys, 'frozen', False):
-        # Launcher.app/Contents/MacOS -> go to Launcher.app root
-        return os.path.abspath(os.path.join(os.path.dirname(sys.executable), "..", ".."))
-    return os.path.dirname(os.path.abspath(__file__))
-
-
-def get_base_path():
-    if getattr(sys, 'frozen', False):
-        return os.path.abspath(
-            os.path.join(os.path.dirname(sys.executable), "bot", "bot")
-        )
-    else:
-        return os.path.dirname(os.path.abspath(__file__))
-
+##########
+#Functions
+##########
 def check_process():
     global process
 
@@ -63,10 +52,10 @@ def run_bot():
         bot_path = "dist/bot/bot"
 
     mode_map = {
-    "Easy": "easy",
-    "Medium": "medium",
-    "Hard": "hard"
-}
+        "Easy": "easy",
+        "Medium": "medium",
+        "Hard": "hard"
+    }
 
     mode_arg = mode_map[selected_mode]
 
@@ -80,17 +69,6 @@ def run_bot():
     # print("Exists:", os.path.exists(bot_path))
 
     check_process()
-
-root = tkinter.Tk()
-root.title("Minesweeper Bot")
-#root.configure(bg="white")
-root.minsize(400, 200)
-root.lift()
-root.focus_force()
-root.attributes("-topmost", True)
-#root.after(100, lambda: root.attributes("-topmost", False))
-
-selected_mode = "Easy"
 
 def set_mode(mode):
     global selected_mode
@@ -110,6 +88,37 @@ def set_mode(mode):
     elif mode == "Hard":
         mode3_btn.config(bg="#4CAF50", fg="white")
 
+    update_config_display()
+
+def update_config_display():
+    mode_key = selected_mode.lower()
+
+    cfg = CONFIG[mode_key]
+
+    text = (
+        f"LEFT: {cfg['LEFT']}   "
+        f"TOP: {cfg['TOP']}   "
+        f"WIDTH: {cfg['WIDTH']}   "
+        f"HEIGHT: {cfg['HEIGHT']}   "
+    )
+
+    config_label.config(text=text)
+
+#########
+#Run Once
+#########
+root = tkinter.Tk()
+root.title("Minesweeper Bot")
+#root.configure(bg="white")
+root.minsize(400, 250)
+root.lift()
+root.focus_force()
+root.attributes("-topmost", True)
+#root.after(100, lambda: root.attributes("-topmost", False))
+
+selected_mode = "Easy"
+
+#Select Mode Buttons
 button_frame = tkinter.Frame(root)
 button_frame.pack(pady=20)
 
@@ -149,6 +158,40 @@ mode3_btn = tkinter.Label(
 mode3_btn.pack(side="left", padx=5)
 mode3_btn.bind("<Button-1>", lambda e: set_mode("Hard"))
 
+#Configuration Paremeters
+if getattr(sys, 'frozen', False):
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+if getattr(sys, "frozen", False):
+    contents_dir = os.path.abspath(
+        os.path.join(os.path.dirname(sys.executable), "..")
+    )
+    config_path = os.path.join(
+        contents_dir,
+        "Resources",
+        "bot",
+        "_internal",
+        "config.json"
+    )
+else:
+    config_path = os.path.join(BASE_DIR, "bot/config.json")
+
+print(config_path)
+with open(config_path, "r") as f:
+    CONFIG = json.load(f)
+
+config_label = tkinter.Label(
+    root,
+    text="",
+    justify="left",
+    font=("Courier", 12)
+)
+config_label.pack(pady=10)
+update_config_display()
+
+#Run Button
 button = tkinter.Label(
     root,
     text="Run Bot",
@@ -164,6 +207,7 @@ button.bind("<Button-1>", lambda e: run_bot())
 
 text = tkinter.Label(root, text="")
 
+#Label in bottom right of screen
 created_label = tkinter.Label(
     root,
     text="Created by Deston Cauthers",
