@@ -200,8 +200,7 @@ def update_board_state():
         for y in range(ROWS):
             if board[y][x] > 0:
                 move_safe_up_in_queue(x, y)
-                    
-        
+                       
 def print_board():
     print("---------------------------")
     for row in board:

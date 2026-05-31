@@ -7,6 +7,8 @@ import subprocess
 import os
 import sys
 import json
+import mss
+from PIL import Image, ImageTk, ImageDraw
 
 process = None
 ##########
@@ -21,6 +23,7 @@ def check_process():#check if bot is still running
         if ret is not None:
             # Process finished → restore UI
             text.config(text="")
+            text.pack_forget()
             button.pack(padx=30, pady=30)
             process = None
             return
@@ -32,6 +35,7 @@ def run_bot():
     global process
     print("Running Bot")
     
+    #removes run button
     button.pack_forget()
 
     text.config(text="Bot running, press ESC to exit")
@@ -58,16 +62,7 @@ def run_bot():
     }
 
     mode_arg = mode_map[selected_mode]
-
     process = subprocess.Popen([bot_path, mode_arg])
-    #process = subprocess.Popen([bot_path], cwd=os.path.dirname(bot_path))
-
-    # print("Executable:", sys.executable)
-    # print("Launcher dir:", launcher_dir)
-    # print("Dist dir:", dist_dir)
-    # print("Bot path:", bot_path)
-    # print("Exists:", os.path.exists(bot_path))
-
     check_process()
 
 def set_mode(mode):
@@ -89,21 +84,6 @@ def set_mode(mode):
         mode3_btn.config(bg="#4CAF50", fg="white")
 
     update_parameter_labels()
-    #update_config_display()
-
-# def update_config_display():
-#     mode_key = selected_mode.lower()
-
-#     cfg = CONFIG[mode_key]
-
-#     text = (
-#         f"LEFT: {cfg['LEFT']}   "
-#         f"TOP: {cfg['TOP']}   "
-#         f"WIDTH: {cfg['WIDTH']}   "
-#         f"HEIGHT: {cfg['HEIGHT']}   "
-#     )
-
-#     config_label.config(text=text)
 
 def save_config():
     with open(config_path, "w") as f:
@@ -153,6 +133,40 @@ def update_parameter_labels():
 
     for param, label in parameter_labels.items():
         label.config(text=str(cfg[param]))
+    
+    update_preview()
+
+    
+def capture_preview():
+    cfg = CONFIG[selected_mode.lower()]
+
+    with mss.mss() as sct:
+        monitor = {
+            "left": cfg["LEFT"],
+            "top": cfg["TOP"],
+            "width": cfg["WIDTH"],
+            "height": cfg["HEIGHT"]
+        }
+
+        screenshot = sct.grab(monitor)
+
+        img = Image.frombytes(
+            "RGB",
+            screenshot.size,
+            screenshot.rgb
+        )
+
+        return img
+
+def update_preview():
+    img = capture_preview()
+
+    img.thumbnail((600, 400))
+
+    tk_img = ImageTk.PhotoImage(img)
+
+    preview_label.config(image=tk_img)
+    preview_label.image = tk_img
 #########
 #Run Once
 #########
@@ -235,20 +249,17 @@ print(config_path)
 with open(config_path, "r") as f:
     CONFIG = json.load(f)
 
-# config_label = tkinter.Label(
-#     root,
-#     text="",
-#     justify="left",
-#     font=("Courier", 12)
-# )
-# config_label.pack(pady=10)
-# update_config_display()
 params = ["LEFT", "TOP", "WIDTH", "HEIGHT"]
 
 for i, param in enumerate(params):
     create_parameter_column(param, i)
 
+#image Preview
+preview_label = tkinter.Label(root)
+preview_label.pack(pady=10)
+
 update_parameter_labels()
+update_preview()
 #Run Button
 button = tkinter.Label(
     root,

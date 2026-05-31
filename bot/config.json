@@ -3,7 +3,7 @@
         "LEFT": 1117,
         "TOP": 451,
         "WIDTH": 449,
-        "HEIGHT": 361,
+        "HEIGHT": 358,
         "COLS": 10,
         "ROWS": 8,
         "OX": 2,
@@ -15,7 +15,7 @@
     },
     "medium": {
         "LEFT": 1072,
-        "TOP": 419,
+        "TOP": 421,
         "WIDTH": 539,
         "HEIGHT": 420,
         "COLS": 18,
@@ -29,7 +29,7 @@
     },
     "hard": {
         "LEFT": 1042,
-        "TOP": 379,
+        "TOP": 381,
         "WIDTH": 599,
         "HEIGHT": 501,
         "COLS": 24,
