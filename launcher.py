@@ -25,6 +25,8 @@ def check_process():#check if bot is still running
             text.config(text="")
             text.pack_forget()
             button.pack(padx=30, pady=30)
+            preview_label.pack(pady=10)
+
             process = None
             return
 
@@ -37,6 +39,8 @@ def run_bot():
     
     #removes run button
     button.pack_forget()
+    #removes preview image
+    preview_label.pack_forget()
 
     text.config(text="Bot running, press ESC to exit")
     text.pack(padx=30, pady=30)
@@ -136,7 +140,6 @@ def update_parameter_labels():
     
     update_preview()
 
-    
 def capture_preview():
     cfg = CONFIG[selected_mode.lower()]
 
@@ -167,9 +170,9 @@ def update_preview():
 
     preview_label.config(image=tk_img)
     preview_label.image = tk_img
-#########
-#Run Once
-#########
+#####################
+#Define UI Elements
+#####################
 root = tkinter.Tk()
 root.title("Minesweeper Bot")
 #root.configure(bg="white")
@@ -258,8 +261,6 @@ for i, param in enumerate(params):
 preview_label = tkinter.Label(root)
 preview_label.pack(pady=10)
 
-update_parameter_labels()
-update_preview()
 #Run Button
 button = tkinter.Label(
     root,
@@ -274,7 +275,14 @@ button = tkinter.Label(
 button.pack(padx=40, pady=20)
 button.bind("<Button-1>", lambda e: run_bot())
 
-text = tkinter.Label(root, text="")
+#Bot Running text
+text = tkinter.Label(
+    root, 
+    text="", 
+    font=("Arial", 20, "bold"), 
+    fg="red"
+)
+
 
 #Label in bottom right of screen
 created_label = tkinter.Label(
@@ -289,5 +297,10 @@ created_label.place(
     x=-10,
     y=-10
 )
+#########
+#Run Once
+#########
+update_parameter_labels()
+update_preview()
 
 root.mainloop()
