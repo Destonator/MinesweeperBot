@@ -25,8 +25,8 @@ def check_process():#check if bot is still running
             # Process finished → restore UI
             text.config(text="")
             text.pack_forget()
+            preview_container.pack(pady=10)
             button.pack(padx=30, pady=30)
-            preview_label.pack(pady=10)
 
             process = None
             return
@@ -34,14 +34,14 @@ def check_process():#check if bot is still running
     # keep checking every 500ms
     root.after(500, check_process)
 
-def run_bot():
+def run_bot():#Runs the bot script and edits UI
     global process
     print("Running Bot")
     
     #removes run button
     button.pack_forget()
     #removes preview image
-    preview_label.pack_forget()
+    preview_container.pack_forget()
 
     text.config(text="Bot running, press ESC to exit")
     text.pack(padx=30, pady=30)
@@ -101,7 +101,6 @@ def change_value(param, delta):
     update_parameter_labels()
 
 def create_parameter_column(param, column):
-
     # Parameter name
     tkinter.Label(
         parameter_frame,
@@ -143,7 +142,6 @@ def update_parameter_labels():
 
 def capture_preview():
     cfg = CONFIG[selected_mode.lower()]
-
     with mss.mss() as sct:
         monitor = {
             "left": cfg["LEFT"],
@@ -171,6 +169,51 @@ def update_preview():
 
     preview_label.config(image=tk_img)
     preview_label.image = tk_img
+    update_color_display()
+
+def rgb_to_hex(rgb):
+    return "#%02x%02x%02x" % tuple(rgb)
+
+def update_color_display():
+    # clear old widgets
+    for widget in color_frame.winfo_children():
+        widget.destroy()
+
+    colors = CONFIG["colors"]
+
+    row = 0
+
+    for color_name, variants in colors.items():
+
+        tkinter.Label(
+            color_frame,
+            text=color_name.capitalize(),
+            width=8,
+            anchor="w"
+        ).grid(row=row, column=0, sticky="w", padx=(0, 10))
+
+        for col, rgb in enumerate(variants):
+
+            square = tkinter.Label(
+                color_frame,
+                bg=rgb_to_hex(rgb),
+                width=3,
+                height=1,
+                relief="solid",
+                borderwidth=1
+            )
+
+            square.grid(
+                row=row,
+                column=col + 1,
+                padx=2,
+                pady=2
+            )
+            square.bind(
+                "<Button-1>",
+                lambda e, rgb=rgb: print(rgb)
+            )
+        row += 1
 #####################
 #Define UI Elements
 #####################
@@ -259,8 +302,18 @@ for i, param in enumerate(params):
     create_parameter_column(param, i)
 
 #image Preview
-preview_label = tkinter.Label(root)
-preview_label.pack(pady=10)
+preview_container = tkinter.Frame(root)
+preview_container.pack(pady=10)
+
+preview_label = tkinter.Label(preview_container)
+preview_label.pack(side="left", padx=10)
+
+color_frame = tkinter.Frame(preview_container)
+color_frame.pack(side="left", anchor="n")
+
+
+# preview_label = tkinter.Label(root)
+# preview_label.pack(pady=10)
 
 #Run Button
 button = tkinter.Label(
@@ -303,5 +356,6 @@ created_label.place(
 #########
 update_parameter_labels()
 update_preview()
+update_color_display()
 
 root.mainloop()
