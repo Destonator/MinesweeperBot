@@ -236,6 +236,7 @@ mode1_btn = tkinter.Label(
     button_frame,
     text="Easy",
     bg="#4CAF50",   # default selected
+    font=("Arial", 20, "bold"), 
     fg="white",
     padx=15,
     pady=8,
@@ -248,6 +249,7 @@ mode2_btn = tkinter.Label(
     button_frame,
     text="Medium",
     bg="lightgray",
+    font=("Arial", 20, "bold"), 
     fg="black",
     padx=15,
     pady=8,
@@ -260,6 +262,7 @@ mode3_btn = tkinter.Label(
     button_frame,
     text="Hard",
     bg="lightgray",
+    font=("Arial", 20, "bold"), 
     fg="black",
     padx=15,
     pady=8,
@@ -269,6 +272,14 @@ mode3_btn.pack(side="left", padx=5)
 mode3_btn.bind("<Button-1>", lambda e: set_mode("Hard"))
 
 #Configuration Paremeters
+bounds_label = tkinter.Label(
+    root,
+    text="Screenshot Bounds:",
+    font=("Arial", 20, "bold"), 
+    fg="grey"
+)
+bounds_label.pack()
+
 parameter_frame = tkinter.Frame(root)
 parameter_frame.pack(pady=10)
 parameter_labels = {}

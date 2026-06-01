@@ -25,7 +25,12 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(BASE_DIR, "config.json"), "r") as f:
     CONFIG = json.load(f)
 
-mode_name = "easy"
+CONFIG["colors"]["unrecognized"] = []
+#clears unrecognized colors
+with open(os.path.join(BASE_DIR, "config.json"), "w") as f:
+    json.dump(CONFIG, f, indent=4)
+
+mode_name = "hard"
 
 if len(sys.argv) > 1:#can now pass arguement from launcher to change mode
     mode_name = sys.argv[1]
@@ -136,6 +141,9 @@ def four(x,y):
 def five(x,y):
     return matches_color_group(x, y, "five")
 
+def six(x, y):
+    return matches_color_group(x, y, "six")
+
 
 def check_game_state():
     if(cell_to_color(RESTARTX, RESTARTY) == (84, 115, 54)):
@@ -169,6 +177,19 @@ def random_queue():
             cell = (x, y)
             cellsToVisit.put(cell, random.random())
 
+def add_unrecognized_color(rgb):
+    color_list = COLORS["unrecognized"]
+
+    rgb_list = list(rgb)
+
+    if rgb_list not in color_list:
+        color_list.append(rgb_list)
+
+        with open(os.path.join(BASE_DIR, "config.json"), "w") as f:
+            json.dump(CONFIG, f, indent=4)
+
+        print("Added unrecognized color:", rgb)
+
 def update_board_state():
     for x in range (COLS):
         for y in range(ROWS):
@@ -185,10 +206,14 @@ def update_board_state():
                     board[y][x] = 4
                 elif(five(x, y)):
                     board[y][x] = 5
+                elif(six(x, y)):
+                    board[y][x] = 6
                 elif(green(x, y)):
                     board[y][x] = UNKNOWN
                 else:
-                    board[y][x] = UNKNOWN
+                    board[y][x] = UNKNOWN#ADD TO UNRECOGNIZED CONFIG.JSON HERE
+                    add_unrecognized_color(cell_to_color(x, y))
+
     for x in range (COLS):
         for y in range(ROWS):
             if board[y][x] > 0:
