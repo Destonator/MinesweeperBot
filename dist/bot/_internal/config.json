@@ -1,46 +1,77 @@
 {
+    "colors": {
+        "green": [
+          [180, 213, 102],
+          [172, 207, 95]
+        ],
+    
+        "zero": [
+          [224, 195, 164],
+          [210, 185, 157]
+        ],
+    
+        "one": [
+          [54, 119, 204]
+        ],
+    
+        "two": [
+          [80, 140, 70]
+        ],
+    
+        "three": [
+          [195, 63, 56]
+        ],
+    
+        "four": [
+          [113, 44, 156]
+        ],
+    
+        "five": [
+          [241, 148, 55],
+          [241, 148, 54]
+        ]
+      },
+    
     "easy": {
-      "LEFT": 1117,
-      "TOP": 451,
-      "WIDTH": 449,
-      "HEIGHT": 361,
-      "COLS": 10,
-      "ROWS": 8,
-      "OX": 2,
-      "OY": 0,
-      "RESTARTX": 3,
-      "RESTARTY": 6,
-      "CHECKWINX": 2,
-      "CHECKWINY": 4
+        "LEFT": 1117,
+        "TOP": 451,
+        "WIDTH": 450,
+        "HEIGHT": 360,
+        "COLS": 10,
+        "ROWS": 8,
+        "OX": 2,
+        "OY": 0,
+        "RESTARTX": 3,
+        "RESTARTY": 6,
+        "CHECKWINX": 2,
+        "CHECKWINY": 4
     },
-  
     "medium": {
-      "LEFT": 1072,
-      "TOP": 419,
-      "WIDTH": 539,
-      "HEIGHT": 420,
-      "COLS": 18,
-      "ROWS": 14,
-      "OX": 2,
-      "OY": -2,
-      "RESTARTX": 10,
-      "RESTARTY": 10,
-      "CHECKWINX": 5,
-      "CHECKWINY": 7.5
+        "LEFT": 1072,
+        "TOP": 421,
+        "WIDTH": 539,
+        "HEIGHT": 420,
+        "COLS": 18,
+        "ROWS": 14,
+        "OX": 2,
+        "OY": -2,
+        "RESTARTX": 10,
+        "RESTARTY": 10,
+        "CHECKWINX": 5,
+        "CHECKWINY": 7.5
     },
-  
     "hard": {
-      "LEFT": 1042,
-      "TOP": 379,
-      "WIDTH": 599,
-      "HEIGHT": 501,
-      "COLS": 24,
-      "ROWS": 20,
-      "OX": 1,
-      "OY": 0,
-      "RESTARTX": 3,
-      "RESTARTY": 6,
-      "CHECKWINX": 2,
-      "CHECKWINY": 4
+        "LEFT": 1042,
+        "TOP": 381,
+        "WIDTH": 599,
+        "HEIGHT": 501,
+        "COLS": 24,
+        "ROWS": 20,
+        "OX": 1,
+        "OY": 0,
+        "RESTARTX": 7,
+        "RESTARTY": 14,
+        "CHECKWINX": 7,
+        "CHECKWINY": 11
     }
-  }
+}

@@ -14,7 +14,6 @@ from PIL import Image
 import os
 import sys
 import json
-#Minesweeper window pinned right
 #CHANGE THIS FOR DEBUG mode
 DEBUG = False
 LOOPING = False
@@ -28,10 +27,11 @@ with open(os.path.join(BASE_DIR, "config.json"), "r") as f:
 
 mode_name = "easy"
 
-if len(sys.argv) > 1:#cannow pass arguement from launcher to change mode
+if len(sys.argv) > 1:#can now pass arguement from launcher to change mode
     mode_name = sys.argv[1]
 
 cfg = CONFIG[mode_name]
+COLORS = CONFIG["colors"]
 
 LEFT = cfg["LEFT"]
 TOP = cfg["TOP"]
@@ -106,39 +106,36 @@ def click_cell(x, y):
     time.sleep(0.0001)
     pyautogui.click()#clicks cell
 
+def matches_color_group(x, y, group_name):
+    pixel = cell_to_color(x, y)
+
+    for color in COLORS[group_name]:
+        if pixel == tuple(color):
+            return True
+
+    return False
+
 def green(x, y):
-    if (cell_to_color(x, y) == (180, 213, 102)):
-        return True
-    elif (cell_to_color(x, y) == (172, 207, 95)):
-        return True
-    else:
-        return False
-    
+    return matches_color_group(x, y, "green")
+
 def zero(x, y):
-    if (cell_to_color(x, y) == (224, 195, 164)):
-        return True
-    elif (cell_to_color(x, y) == (210, 185, 157)):
-        return True
-    else:
-        return False
+    return matches_color_group(x, y, "zero")
 
 def one(x, y):
-    return cell_to_color(x, y) == (54, 119, 204)
+    return matches_color_group(x, y, "one")
 
 def two(x, y):
-    return cell_to_color(x, y) == (80, 140, 70)
+    return matches_color_group(x, y, "two")
 
 def three(x,y):
-    return cell_to_color(x, y) == (195, 63, 56)
+    return matches_color_group(x, y, "three")
 
 def four(x,y):
-    return cell_to_color(x, y) == (113, 44, 156)
+    return matches_color_group(x, y, "four")
 
 def five(x,y):
-    if cell_to_color(x, y) == (241, 148, 55):
-        return True
-    elif cell_to_color(x, y) == (241, 148, 54):
-        return True
+    return matches_color_group(x, y, "five")
+
 
 def check_game_state():
     if(cell_to_color(RESTARTX, RESTARTY) == (84, 115, 54)):

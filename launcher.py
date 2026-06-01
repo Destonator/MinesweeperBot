@@ -8,8 +8,9 @@ import os
 import sys
 import json
 import mss
-from PIL import Image, ImageTk, ImageDraw
-
+from PIL import Image, ImageTk
+#NEXT STEPS:
+#Add a debug option to show what color and number the bot would recognize
 process = None
 ##########
 #Functions
