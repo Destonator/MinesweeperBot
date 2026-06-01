@@ -105,7 +105,7 @@ def create_parameter_column(param, column):
     tkinter.Label(
         parameter_frame,
         text=param,
-        font=("Arial", 20, "bold")
+        font=("Arial", 15, "bold")
     ).grid(row=0, column=column*3+1, padx=0)
 
     # Minus button
@@ -214,13 +214,31 @@ def update_color_display():
                 lambda e, rgb=rgb: print(rgb)
             )
         row += 1
+
+def update_preview_visibility():
+    if show_preview_var.get():
+        preview_label.pack(side="left", padx=10)
+    else:
+        preview_label.pack_forget()
+
+    if show_colors_var.get():
+        color_frame.pack(side="left", anchor="n")
+    else:
+        color_frame.pack_forget()
+
+    # Hide whole container if nothing inside it
+    if show_preview_var.get() or show_colors_var.get():
+        if not preview_container.winfo_ismapped():
+            preview_container.pack(pady=10)
+    else:
+        preview_container.pack_forget()
 #####################
 #Define UI Elements
 #####################
 root = tkinter.Tk()
 root.title("Minesweeper Bot")
 #root.configure(bg="white")
-root.minsize(400, 250)
+root.minsize(400, 350)
 root.lift()
 root.focus_force()
 root.attributes("-topmost", True)
@@ -312,6 +330,30 @@ params = ["LEFT", "TOP", "WIDTH", "HEIGHT"]
 for i, param in enumerate(params):
     create_parameter_column(param, i)
 
+#Show Preview CheckBox
+show_preview_var = tkinter.BooleanVar(value=True)
+
+show_preview_checkbox = tkinter.Checkbutton(
+    root,
+    text="Show Preview",
+    variable=show_preview_var,
+    command=update_preview_visibility
+)
+
+show_preview_checkbox.pack()
+
+#Show Colors CheckBox
+show_colors_var = tkinter.BooleanVar(value=False)
+
+show_colors_checkbox = tkinter.Checkbutton(
+    root,
+    text="Show Colors",
+    variable=show_colors_var,
+    command=update_preview_visibility
+)
+
+show_colors_checkbox.pack()
+
 #image Preview
 preview_container = tkinter.Frame(root)
 preview_container.pack(pady=10)
@@ -320,7 +362,7 @@ preview_label = tkinter.Label(preview_container)
 preview_label.pack(side="left", padx=10)
 
 color_frame = tkinter.Frame(preview_container)
-color_frame.pack(side="left", anchor="n")
+#color_frame.pack(side="left", anchor="n")
 
 
 # preview_label = tkinter.Label(root)
@@ -331,13 +373,14 @@ button = tkinter.Label(
     root,
     text="Run Bot",
     bg="#4CAF50",
+    font=("Arial", 20, "bold"), 
     fg="white",
     padx=20,
     pady=10,
     cursor="hand2"
 )
 
-button.pack(padx=40, pady=20)
+button.place(relx=0.5, rely=1.0, anchor="s", y=-35)
 button.bind("<Button-1>", lambda e: run_bot())
 
 #Bot Running text
@@ -347,7 +390,6 @@ text = tkinter.Label(
     font=("Arial", 20, "bold"), 
     fg="red"
 )
-
 
 #Label in bottom right of screen
 created_label = tkinter.Label(

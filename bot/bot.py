@@ -144,6 +144,9 @@ def five(x,y):
 def six(x, y):
     return matches_color_group(x, y, "six")
 
+def seven(x, y):
+    return matches_color_group(x, y, "seven")
+
 
 def check_game_state():
     if(cell_to_color(RESTARTX, RESTARTY) == (84, 115, 54)):
@@ -208,6 +211,8 @@ def update_board_state():
                     board[y][x] = 5
                 elif(six(x, y)):
                     board[y][x] = 6
+                elif(seven(x, y)):
+                    board[y][x] = 7
                 elif(green(x, y)):
                     board[y][x] = UNKNOWN
                 else:
