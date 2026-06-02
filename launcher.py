@@ -1,4 +1,4 @@
-# pyinstaller --onedir --windowed --icon=icon.icns launcher.py
+# pyinstaller --onedir --windowed --icon=icon.icns --name "Minesweeper Bot" launcher.py
 
 # Code for the UI and launch the bot
 #Created By Deston Cauthers

@@ -17,6 +17,7 @@ import json
 #CHANGE THIS FOR DEBUG mode
 DEBUG = False
 LOOPING = False
+SAVENEWCOLORS = True
 ###############################################################
 #Variables & Constants
 ###############################################################
@@ -30,7 +31,7 @@ CONFIG["colors"]["unrecognized"] = []
 with open(os.path.join(BASE_DIR, "config.json"), "w") as f:
     json.dump(CONFIG, f, indent=4)
 
-mode_name = "hard"
+mode_name = "medium"
 
 if len(sys.argv) > 1:#can now pass arguement from launcher to change mode
     mode_name = sys.argv[1]
@@ -169,8 +170,9 @@ def reload_frame():
                 "width": WIDTH,
                 "height": HEIGHT}
         screenshot = sct.grab(monitor)
-        mss.tools.to_png(screenshot.rgb, screenshot.size, output=os.path.join(BASE_DIR, "screenshot.png"))
-        return Image.open(os.path.join(BASE_DIR,"screenshot.png"))
+        # mss.tools.to_png(screenshot.rgb, screenshot.size, output=os.path.join(BASE_DIR, "screenshot.png"))
+        # return Image.open(os.path.join(BASE_DIR,"screenshot.png"))
+        return Image.frombytes("RGB", screenshot.size, screenshot.rgb)
     
 def random_queue():
     global cellsToVisit
@@ -217,7 +219,8 @@ def update_board_state():
                     board[y][x] = UNKNOWN
                 else:
                     board[y][x] = UNKNOWN#ADD TO UNRECOGNIZED CONFIG.JSON HERE
-                    add_unrecognized_color(cell_to_color(x, y))
+                    if SAVENEWCOLORS:
+                        add_unrecognized_color(cell_to_color(x, y))
 
     for x in range (COLS):
         for y in range(ROWS):
@@ -250,7 +253,6 @@ def count_mines(x, y):
 def count_unknown(x, y):
     return sum(1 for nx, ny in get_neighbors(x, y) if board[ny][nx] == UNKNOWN)
 
-#B1 pattern
 def mark_mines(x, y):
     val = board[y][x]
     if(val <= 0):
@@ -261,7 +263,6 @@ def mark_mines(x, y):
                 if board[ny][nx] == UNKNOWN:
                     board[ny][nx] = MINE
 
-#B2 pattern
 def move_safe_up_in_queue(x, y):
     val = board[y][x]
     if(val<= 0):
@@ -326,10 +327,14 @@ print("Initializing")
 img = reload_frame()
 gameActive = check_game_state()
 
-pyautogui.moveTo(cell_to_cords(2, 12)) #, duration=0.5*random.random()
+
+pyautogui.moveTo(cell_to_cords(COLS/2, ROWS/2)) #, duration=0.5*random.random()
 time.sleep(0.01)
 pyautogui.click()#enters window
 pyautogui.click()#clicks cell
+
+pyautogui.PAUSE = 0
+pyautogui.FAILSAFE = False
 
 if(DEBUG):
     running = False
@@ -400,8 +405,8 @@ while(running):
         board = [[UNKNOWN for _ in range(COLS)] for _ in range(ROWS)]
         gameWon = False
         click_cell(RESTARTX, RESTARTY)#Restart Button
-        time.sleep(0.1)
-        click_cell(int(ROWS/2), int(COLS/2))#Start with center
+        time.sleep(0.5)
+        click_cell(int(COLS/2), int(ROWS/2))#Start with center
         print("Started Timer")
         game_start_time = time.time()
         time.sleep(0.5)#Animation Delay
