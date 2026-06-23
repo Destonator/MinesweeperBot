@@ -18,6 +18,8 @@ import json
 DEBUG = False
 LOOPING = False
 SAVENEWCOLORS = False
+GUESSING = True
+RELIABLE = False
 ###############################################################
 #Variables & Constants
 ###############################################################
@@ -31,7 +33,7 @@ CONFIG["colors"]["unrecognized"] = []
 with open(os.path.join(BASE_DIR, "config.json"), "w") as f:
     json.dump(CONFIG, f, indent=4)
 
-mode_name = "medium"
+mode_name = "hard"
 
 if len(sys.argv) > 1:#can now pass arguement from launcher to change mode
     mode_name = sys.argv[1]
@@ -112,11 +114,14 @@ def click_cell(x, y):
     time.sleep(0.0001)
     pyautogui.click()#clicks cell
 
+def color_close(color1, color2, threshold=10):
+    return all(abs(a-b) <= threshold for a, b in zip(color1, color2))
+
 def matches_color_group(x, y, group_name):
     pixel = cell_to_color(x, y)
 
     for color in COLORS[group_name]:
-        if pixel == tuple(color):
+        if color_close(pixel, tuple(color)):
             return True
 
     return False
@@ -228,7 +233,7 @@ def update_board_state():
     for x in range (COLS):
         for y in range(ROWS):
             if board[y][x] > 0:
-                move_safe_up_in_queue(x, y)
+                add_safe_to_queue(x, y)
                        
 def print_board():
     print("---------------------------")
@@ -262,7 +267,7 @@ def mark_mines(x, y):
                 if board[ny][nx] == UNKNOWN:
                     board[ny][nx] = MINE
 
-def move_safe_up_in_queue(x, y):
+def add_safe_to_queue(x, y):
     val = board[y][x]
     if(val<= 0):
         return
@@ -278,6 +283,51 @@ def get_unknown_neighbors(x, y):
 
 def remaining_mines(x, y):
     return board[y][x] - count_mines(x, y)
+
+def advanced_search2():
+    retVal = False
+
+    constraints = []
+
+    # Build constraints
+    for x in range(COLS):
+        for y in range(ROWS):
+            if board[y][x] > 0:
+                unknowns = set(get_unknown_neighbors(x,y))
+
+                if unknowns:
+                    constraints.append(
+                        (unknowns, remaining_mines(x,y))
+                    )
+
+
+    # Compare every pair
+    for cells1, mines1 in constraints:
+
+        for cells2, mines2 in constraints:
+
+            if cells1 == cells2:
+                continue
+
+            # Find difference between equations
+            diff = cells1 - cells2
+            if not diff:
+                continue
+
+            mine_difference = mines1 - mines2
+            # If difference cells must all be mines
+            if mine_difference == len(diff):
+                for cell in diff:
+                    x,y = cell
+                    board[y][x] = MINE
+                    retVal = True
+
+            # If difference cells must all be safe
+            # elif mine_difference == 0:
+            #     for cell in diff:
+            #         cellsToVisit.put(cell,0)
+            #         retVal = True
+    return retVal
 
 def advanced_search():
     retVal = False
@@ -345,8 +395,9 @@ pyautogui.FAILSAFE = False
 if(DEBUG):
     running = False
     update_board_state()
+    advanced_search2()
     print_board()
-    print(cell_to_color(2, 12))
+    print(cell_to_color(9, 3))
     #(178, 214, 96)
     img = Image.open(os.path.join(BASE_DIR, "screenshot.png"))
     pixels = img.load()
@@ -375,6 +426,8 @@ times = list()
 game_time = None
 
 while(running):
+    if RELIABLE:
+        time.sleep(0.8)
     img = reload_frame()
     gameActive = check_game_state()
     if(not gameActive):
@@ -430,19 +483,25 @@ while(running):
             else:
                 print("doing advanced search")
                 if not advanced_search():
-                    #time.sleep(0.5)
-                    print("guessing")
-                    guessed = True
-                    found = False
-                    for y in range(ROWS):
-                        if found:
-                            break
-                        for x in range(COLS):
-                            if board[y][x] == UNKNOWN:
-                                randCell = x, y
-                                cellsToVisit.put(randCell, 0)
-                                found = True
-                                break
+                    print("doing advanced search 2")
+                    if not advanced_search2():
+                        #time.sleep(0.5)
+                        if GUESSING:
+                            print("guessing")
+                            guessed = True
+                            found = False
+                            for y in range(ROWS):
+                                if found:
+                                    break
+                                for x in range(COLS):
+                                    if board[y][x] == UNKNOWN:
+                                        randCell = x, y
+                                        cellsToVisit.put(randCell, 0)
+                                        found = True
+                                        break
+                        else:
+                            print("wants to guess")
+                        
         #print_board()
         checkingCells = True
         while(checkingCells and running):
