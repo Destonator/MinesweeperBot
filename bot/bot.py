@@ -17,7 +17,7 @@ import json
 #CHANGE THIS FOR DEBUG mode
 DEBUG = False
 LOOPING = False
-SAVENEWCOLORS = True
+SAVENEWCOLORS = False
 ###############################################################
 #Variables & Constants
 ###############################################################
@@ -147,7 +147,6 @@ def six(x, y):
 
 def seven(x, y):
     return matches_color_group(x, y, "seven")
-
 
 def check_game_state():
     if(cell_to_color(RESTARTX, RESTARTY) == (84, 115, 54)):
@@ -282,40 +281,47 @@ def remaining_mines(x, y):
 
 def advanced_search():
     retVal = False
-    for x1 in range(COLS):
-        for y1 in range(ROWS):
-            val1 = board[y1][x1]
-            if val1 <= 0:
-                continue
+    information_cells = []
+    for x in range(COLS):
+        for y in range(ROWS):
+            if board[y][x] > 0:
+                information_cells.append((x, y))
 
-            set1 = set(get_unknown_neighbors(x1, y1))
-            rem1 = remaining_mines(x1, y1)
+    for x1, y1 in information_cells:
+        val1 = board[y1][x1]
+        if val1 <= 0:
+            continue
 
-            for x2 in range(COLS):
-                for y2 in range(ROWS):
-                    if (x1, y1) == (x2, y2):
-                        continue
+        set1 = set(get_unknown_neighbors(x1, y1))
+        if not set1:
+            continue
 
-                    val2 = board[y2][x2]
-                    if val2 <= 0:
-                        continue
+        rem1 = remaining_mines(x1, y1)
 
-                    set2 = set(get_unknown_neighbors(x2, y2))
-                    rem2 = remaining_mines(x2, y2)
+        for x2 in range(COLS):
+            for y2 in range(ROWS):
+                if (x1, y1) == (x2, y2):
+                    continue
 
-                    if set1.issubset(set2):
-                        # Case: same mine count, extra cells safe
-                        if rem1 == rem2:
-                            extra = set2 - set1
-                            for cx, cy in extra:
-                                cellsToVisit.put((cx, cy), 0)
-                                retVal = True
-                        # Case: difference = mines, extra cells are mines
-                        elif rem2 - rem1 == len(set2 - set1):
-                            extra = set2 - set1
-                            for cx, cy in extra:
-                                board[cy][cx] = MINE
-                                retVal = True
+                val2 = board[y2][x2]
+                if val2 <= 0:
+                    continue
+
+                set2 = set(get_unknown_neighbors(x2, y2))
+                rem2 = remaining_mines(x2, y2)
+
+                if set1.issubset(set2):
+                    # Case: same mine count, extra cells safe
+                    extra = set2 - set1
+                    if rem1 == rem2:
+                        for cx, cy in extra:
+                            cellsToVisit.put((cx, cy), 0)
+                            retVal = True
+                    # Case: difference = mines, extra cells are mines
+                    elif rem2 - rem1 == len(set2 - set1):
+                        for cx, cy in extra:
+                            board[cy][cx] = MINE
+                            retVal = True
     return retVal
 
 #####
@@ -409,7 +415,7 @@ while(running):
         click_cell(int(COLS/2), int(ROWS/2))#Start with center
         print("Started Timer")
         game_start_time = time.time()
-        time.sleep(0.5)#Animation Delay
+        time.sleep(0.8)#Animation Delay
 
     else:
         update_board_state()
@@ -424,7 +430,7 @@ while(running):
             else:
                 print("doing advanced search")
                 if not advanced_search():
-                    time.sleep(0.5)
+                    #time.sleep(0.5)
                     print("guessing")
                     guessed = True
                     found = False

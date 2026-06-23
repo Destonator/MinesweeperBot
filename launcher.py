@@ -9,9 +9,9 @@ import sys
 import json
 import mss
 from PIL import Image, ImageTk
-#NEXT STEPS:
-#Add a debug option to show what color and number the bot would recognize
+
 process = None
+
 ##########
 #Functions
 ##########
@@ -26,8 +26,7 @@ def check_process():#check if bot is still running
             text.config(text="")
             text.pack_forget()
             preview_container.pack(pady=10)
-            button.pack(padx=30, pady=30)
-
+            button.place(relx=0.5, rely=1.0, anchor="s", y=-35)
             process = None
             return
 
@@ -39,7 +38,7 @@ def run_bot():#Runs the bot script and edits UI
     print("Running Bot")
     
     #removes run button
-    button.pack_forget()
+    button.place_forget()
     #removes preview image
     preview_container.pack_forget()
 
@@ -232,6 +231,7 @@ def update_preview_visibility():
             preview_container.pack(pady=10)
     else:
         preview_container.pack_forget()
+
 #####################
 #Define UI Elements
 #####################
